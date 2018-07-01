@@ -76,4 +76,18 @@ class Patrol_model extends CI_Model
         $this->db->update('service_provider_patrol_assignment', $data);
     }
 
+    public function getAssignedPatrols($help_request_id)
+    {
+        $this->db->where('help_request_id', $help_request_id);
+        $this->db->where('status !=', 'CANCELLED');
+
+        $query = $this->db->get('service_provider_patrol_assignment');
+
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return null;
+        }
+    }
+
 }

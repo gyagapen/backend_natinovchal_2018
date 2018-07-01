@@ -3,16 +3,47 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class HelpRequest extends REST_Controller
 {
+    
+    
     public function index_get()
     {
-        // Display all book
+        //get help request for a device
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+            'help_details' => null,
+            'assignment_details' => null,
+        );
 
-        $this->response('ok');
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Help_request_model');
+            $this->load->model('Patrol_model');
+
+            //get parameters
+            $device_id = $this->get('device_id');
+
+            //retrieve help details
+            $help_details = $this->Help_request_model->getLiveHelpRequestByDeviceId($device_id);
+            $response_array["help_details"] = $help_details;
+
+            if($help_details != null)
+            {
+                $assignment_details = $this->Patrol_model->getAssignedPatrols($help_details->id);
+                $response_array["assignment_details"] = $assignment_details;
+            }
+
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+        $this->response($response_array);
     }
 
     public function index_post()
     {
-        // Create a new book
+
     }
 
     //initiate help request
@@ -83,6 +114,35 @@ class HelpRequest extends REST_Controller
 
             //check if any request for this device id is pending
             $this->Help_request_model->updateRequestStatus($request_id, "CANCELLED");
+
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+        $this->response($response_array);
+
+    }
+
+    public function updateRequestorLocation()
+    {
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+        );
+
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Help_request_model');
+
+            //get parameters
+            $help_request_id = $this->post('help_request_id');
+            $longitude = $this->post('longitude');
+            $latitude = $this->post('latitude');
+
+            //check if any request for this device id is pending
+            $this->Help_request_model->updateHelpRequestorPosition($help_request_id, $longitude, $latitude);
 
         } catch (Exception $e) {
             $response_array["status"] = false;

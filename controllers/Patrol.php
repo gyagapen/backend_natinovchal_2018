@@ -39,7 +39,7 @@ class Patrol extends REST_Controller
             $result = $this->updateHelpRequestStatusFromPatrol($help_request_id, $patrol_id, $latitude, $longitude, $device_id);
 
             $response_array["id"] = $insert_id;
-            $response_array["distance"] = $result["distance"];
+            $response_array["distance"] = $result["distance "];
             $response_array["ETA"] = $result["time"];
 
         } catch (Exception $e) {
