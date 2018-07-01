@@ -51,7 +51,16 @@ class Help_request_model extends CI_Model
 
     public function getLiveHelpRequest($device_id)
     {
-        $query = $this->db->get_where('mytable', array('id' => $id), $limit, $offset);
+        $query = $this->db->get_where('help_request', array('device_id' => $device_id, 'status' => 'PENDING'));
+
+        if($query->num_rows() > 0)
+        {
+            return $query->first_row();
+        } else
+        {
+            return null;
+        }
     }
+
 
 }
