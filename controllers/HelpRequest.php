@@ -42,7 +42,7 @@ class HelpRequest extends REST_Controller
             $provider_list = $this->post('provider_list');
 
             //check if any request for this device id is pending
-            if ($this->Help_request_model->getLiveHelpRequest($device_id) != null) {
+            if ($this->Help_request_model->getLiveHelpRequestByDeviceId($device_id) != null) {
                 throw new Exception('Pending request exists for this device id');
             } else {
 
@@ -59,6 +59,35 @@ class HelpRequest extends REST_Controller
             $response_array["error"] = $e->getMessage();
         }
         $response_array["id"] = $insert_id;
+        $this->response($response_array);
+
+    }
+
+    //cancel help request
+    public function cancel_post()
+    {
+
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+        );
+
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Help_request_model');
+
+            //get parameters
+            $request_id = $this->post('request_id');
+
+            //check if any request for this device id is pending
+            $this->Help_request_model->updateRequestStatus($request_id, "CANCELLED");
+
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
         $this->response($response_array);
 
     }

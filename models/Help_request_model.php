@@ -49,18 +49,56 @@ class Help_request_model extends CI_Model
 
     }
 
-    public function getLiveHelpRequest($device_id)
+    public function getLiveHelpRequestByDeviceId($device_id)
     {
         $query = $this->db->get_where('help_request', array('device_id' => $device_id, 'status' => 'PENDING'));
 
-        if($query->num_rows() > 0)
-        {
+        if ($query->num_rows() > 0) {
             return $query->first_row();
-        } else
-        {
+        } else {
             return null;
         }
     }
 
+    public function getLiveHelpRequestbyReqId($request_id)
+    {
+        $query = $this->db->get_where('help_request', array('id' => $request_id, 'status' => 'PENDING'));
+
+        if ($query->num_rows() > 0) {
+            return $query->first_row();
+        } else {
+            return null;
+        }
+    }
+
+    public function updateRequestStatus($request_id, $new_status)
+    {
+        $data = array(
+            'status' => $new_status,
+        );
+
+        $this->db->where('id', $request_id);
+        $this->db->update('help_request', $data);
+    }
+
+    public function retrieveLatestHelpRequestorPosition($help_request_id)
+    {
+        $this->db->where('help_request_id', $help_request_id);
+        $this->db->order_by("date_time", "desc"); 
+        $query = $this->db->get('help_request_location');
+
+        return $query->first_row();
+    }
+
+    public function updateHelpRequestorPosition($help_request_id, $longitude, $latitude)
+    {
+        $data_location = array(
+            'help_request_id' => $help_request_id,
+            'longitude' => $longitude,
+            'latitude' => $latitude,
+        );
+        $this->db->set('date_time', 'NOW()', false);
+        $this->db->insert('help_request_location', $data_location);
+    }
 
 }
