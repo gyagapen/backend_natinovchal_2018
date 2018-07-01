@@ -1,11 +1,14 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
-class Help_request_model extends CI_Model {
-    
-    public function __construct() {
+class Help_request_model extends CI_Model
+{
+
+    public function __construct()
+    {
         $this->load->database();
     }
 
@@ -13,11 +16,12 @@ class Help_request_model extends CI_Model {
     {
         //insert help request
         $data = array(
-        'name' => $customer_name,
-        'age' => $age,
-        'blood_group' => $bloog_group,
-        'special_conditions' => $special_conditions,
-        'device_id' => $device_id);
+            'name' => $customer_name,
+            'age' => $age,
+            'blood_group' => $bloog_group,
+            'special_conditions' => $special_conditions,
+            'device_id' => $device_id,
+            'status' => 'PENDING');
 
         $this->db->insert('help_request', $data);
         $insert_id = $this->db->insert_id();
@@ -26,15 +30,14 @@ class Help_request_model extends CI_Model {
         $data_location = array(
             'help_request_id' => $insert_id,
             'longitude' => $longitude,
-            'latitude' => $latitude
+            'latitude' => $latitude,
         );
-        $this->db->set('date_time', 'NOW()', FALSE);
+        $this->db->set('date_time', 'NOW()', false);
         $this->db->insert('help_request_location', $data_location);
 
         //insert help_request_providers
         $providers = explode("|", $provider_list);
-        foreach($providers as $provider)
-        {
+        foreach ($providers as $provider) {
             $data_provider = array(
                 'help_request_id' => $insert_id,
                 'needed_provider_id' => $provider,
@@ -42,9 +45,13 @@ class Help_request_model extends CI_Model {
             $this->db->insert('help_request_provider_need', $data_provider);
         }
 
+        return $insert_id;
 
     }
 
-
+    public function getLiveHelpRequest($device_id)
+    {
+        $query = $this->db->get_where('mytable', array('id' => $id), $limit, $offset);
+    }
 
 }
