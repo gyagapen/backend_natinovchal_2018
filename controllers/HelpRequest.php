@@ -3,8 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class HelpRequest extends REST_Controller
 {
-    
-    
+
     public function index_get()
     {
         //get help request for a device
@@ -28,8 +27,7 @@ class HelpRequest extends REST_Controller
             $help_details = $this->Help_request_model->getLiveHelpRequestByDeviceId($device_id);
             $response_array["help_details"] = $help_details;
 
-            if($help_details != null)
-            {
+            if ($help_details != null) {
                 $assignment_details = $this->Patrol_model->getAssignedPatrols($help_details->id);
                 $response_array["assignment_details"] = $assignment_details;
             }
@@ -123,26 +121,46 @@ class HelpRequest extends REST_Controller
 
     }
 
-    public function updateRequestorLocation()
+    public function updateRequestorLocation_post()
     {
         //initialization
         $response_array = array(
             'status' => true,
             'error' => "",
+            'assignment_details' => "",
         );
 
         try
         {
             $this->CI = &get_instance();
             $this->load->model('Help_request_model');
+            $this->load->model('Patrol_model');
 
             //get parameters
             $help_request_id = $this->post('help_request_id');
             $longitude = $this->post('longitude');
             $latitude = $this->post('latitude');
 
-            //check if any request for this device id is pending
+            //update
             $this->Help_request_model->updateHelpRequestorPosition($help_request_id, $longitude, $latitude);
+
+            //get assigned patrols
+            $assignment_patrols = $this->Patrol_model->getAssignedPatrols($help_request_id);
+            foreach ($assignment_patrols as $assignment) {
+                //retrieve location
+                $patrol_location = $this->Patrol_model->getPatrolLatestLocation($assignment->patrol_id);
+
+                //recompute distance
+                $computed_dist = GetDrivingDistance($patrol_location->latitude, $latitude, $patrol_location->longitude, $longitude);
+                $assignment->ETA_min = $computed_dist["time"];
+                $assignment->distance_km = $computed_dist["distance"];
+
+                //save recomputed distance
+                $this->Patrol_model->updateAssignmentETA($assignment_id, $computed_dist["time"], $computed_dist["distance"]);
+
+            }
+
+            $response_array["assignment_details"] = $assignment_patrols;
 
         } catch (Exception $e) {
             $response_array["status"] = false;

@@ -12,6 +12,15 @@ class Patrol_model extends CI_Model
         $this->load->database();
     }
 
+    public function getPatrolLatestLocation($patrol_id)
+    {
+        $this->db->where('patrol_id', $patrol_id);
+        $this->db->order_by("date_time", "desc");
+        $query = $this->db->get('service_provider_patrol_location');
+
+        return $query->first_row();
+    }
+
     public function assignPatrol($help_request_id, $patrol_id)
     {
         //assign patrol to help request
@@ -51,6 +60,7 @@ class Patrol_model extends CI_Model
         $this->db->update('service_provider_patrol_assignment', $data);
     }
 
+
     public function getAssignedHelpRequest($help_request_id, $patrol_id)
     {
         $this->db->where('help_request_id', $help_request_id);
@@ -64,6 +74,17 @@ class Patrol_model extends CI_Model
         } else {
             return null;
         }
+    }
+
+    public function updateAssignmentETA($assignment_id, $ETA_min, $distance_km)
+    {
+        $data = array(
+            'ETA_min' => $ETA_min,
+            'distance_km' => $distance_km
+        );
+
+        $this->db->where('id', $assignment_id);
+        $this->db->update('service_provider_patrol_assignment', $data);
     }
 
     public function updateStatus($assignment_id, $new_status)
