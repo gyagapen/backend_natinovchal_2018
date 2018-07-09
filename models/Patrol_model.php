@@ -67,6 +67,7 @@ class Patrol_model extends CI_Model
         $this->db->where('patrol_id', $patrol_id);
         $this->db->where('status', 'TRANSIT');
         $this->db->order_by("id", "desc");
+
         $query = $this->db->get('service_provider_patrol_assignment');
 
         if ($query->num_rows() > 0) {

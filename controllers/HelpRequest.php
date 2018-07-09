@@ -28,6 +28,17 @@ class HelpRequest extends REST_Controller
             $response_array["help_details"] = $help_details;
 
             if ($help_details != null) {
+
+                $needed_providers = $this->Help_request_model->getNeededProviders($help_details->id);
+                $provider_list = "";
+                foreach($needed_providers as $provider)
+                {
+                    $provider_list = $provider_list.$provider->needed_provider_id."|";
+                    
+                }
+                $response_array["help_details"]->resquested_providers = $provider_list;
+                
+                //assignment details
                 $assignment_details = $this->Patrol_model->getAssignedPatrols($help_details->id);
                 $response_array["assignment_details"] = $assignment_details;
             }
@@ -55,6 +66,7 @@ class HelpRequest extends REST_Controller
             'id' => "",
         );
 
+        $insert_id = "";
         try
         {
             $this->CI = &get_instance();

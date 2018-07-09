@@ -53,8 +53,21 @@ class Help_request_model extends CI_Model
     {
         $query = $this->db->get_where('help_request', array('device_id' => $device_id, 'status' => 'PENDING'));
 
+
         if ($query->num_rows() > 0) {
             return $query->first_row();
+        } else {
+            return null;
+        }
+    }
+
+    public function getNeededProviders($help_request_id)
+    {
+        $query = $this->db->get_where('help_request_provider_need', array('help_request_id' => $help_request_id));
+
+        
+        if ($query->num_rows() > 0) {
+            return $query->result();
         } else {
             return null;
         }
@@ -84,7 +97,7 @@ class Help_request_model extends CI_Model
     public function retrieveLatestHelpRequestorPosition($help_request_id)
     {
         $this->db->where('help_request_id', $help_request_id);
-        $this->db->order_by("date_time", "desc"); 
+        $this->db->order_by("date_time", "desc");
         $query = $this->db->get('help_request_location');
 
         return $query->first_row();
