@@ -41,12 +41,14 @@ class HelpRequest extends REST_Controller
                 $assignment_details = $this->Patrol_model->getAssignedPatrols($help_details->id);
                 $response_array["assignment_details"] = $assignment_details;
                 $i = 0;
-                foreach ($assignment_details as $assignment) {
-                    $patrol_id = $assignment->patrol_id;
-                    $latest_location = $this->Patrol_model->getPatrolLatestLocation($patrol_id);
-                    $response_array["assignment_details"][$i]->longitude = $latest_location->longitude;
-                    $response_array["assignment_details"][$i]->latitude = $latest_location->latitude;
-                    $i++;
+                if ($assignment_details != null) {
+                    foreach ($assignment_details as $assignment) {
+                        $patrol_id = $assignment->patrol_id;
+                        $latest_location = $this->Patrol_model->getPatrolLatestLocation($patrol_id);
+                        $response_array["assignment_details"][$i]->longitude = $latest_location->longitude;
+                        $response_array["assignment_details"][$i]->latitude = $latest_location->latitude;
+                        $i++;
+                    }
                 }
             }
 
