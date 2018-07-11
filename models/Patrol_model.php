@@ -60,7 +60,6 @@ class Patrol_model extends CI_Model
         $this->db->update('service_provider_patrol_assignment', $data);
     }
 
-
     public function getAssignedHelpRequest($help_request_id, $patrol_id)
     {
         $this->db->where('help_request_id', $help_request_id);
@@ -81,7 +80,7 @@ class Patrol_model extends CI_Model
     {
         $data = array(
             'ETA_min' => $ETA_min,
-            'distance_km' => $distance_km
+            'distance_km' => $distance_km,
         );
 
         $this->db->where('id', $assignment_id);

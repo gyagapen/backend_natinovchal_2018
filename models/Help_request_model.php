@@ -12,7 +12,7 @@ class Help_request_model extends CI_Model
         $this->load->database();
     }
 
-    public function initiateHelpRequest($customer_name, $age, $bloog_group, $special_conditions, $device_id, $longitude, $latitude, $provider_list)
+    public function initiateHelpRequest($customer_name, $age, $bloog_group, $special_conditions, $device_id, $longitude, $latitude, $provider_list, $event_type)
     {
         //insert help request
         $data = array(
@@ -21,7 +21,8 @@ class Help_request_model extends CI_Model
             'blood_group' => $bloog_group,
             'special_conditions' => $special_conditions,
             'device_id' => $device_id,
-            'status' => 'PENDING');
+            'status' => 'PENDING',
+            'event_type' => $event_type);
 
         $this->db->insert('help_request', $data);
         $insert_id = $this->db->insert_id();
@@ -53,7 +54,6 @@ class Help_request_model extends CI_Model
     {
         $query = $this->db->get_where('help_request', array('device_id' => $device_id, 'status' => 'PENDING'));
 
-
         if ($query->num_rows() > 0) {
             return $query->first_row();
         } else {
@@ -65,7 +65,6 @@ class Help_request_model extends CI_Model
     {
         $query = $this->db->get_where('help_request_provider_need', array('help_request_id' => $help_request_id));
 
-        
         if ($query->num_rows() > 0) {
             return $query->result();
         } else {

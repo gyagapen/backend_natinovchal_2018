@@ -31,16 +31,23 @@ class HelpRequest extends REST_Controller
 
                 $needed_providers = $this->Help_request_model->getNeededProviders($help_details->id);
                 $provider_list = "";
-                foreach($needed_providers as $provider)
-                {
-                    $provider_list = $provider_list.$provider->needed_provider_id."|";
-                    
+                foreach ($needed_providers as $provider) {
+                    $provider_list = $provider_list . $provider->needed_provider_id . "|";
+
                 }
-                $response_array["help_details"]->resquested_providers = $provider_list;
-                
+                $response_array["help_details"]->requested_providers = $provider_list;
+
                 //assignment details
                 $assignment_details = $this->Patrol_model->getAssignedPatrols($help_details->id);
                 $response_array["assignment_details"] = $assignment_details;
+                $i = 0;
+                foreach ($assignment_details as $assignment) {
+                    $patrol_id = $assignment->patrol_id;
+                    $latest_location = $this->Patrol_model->getPatrolLatestLocation($patrol_id);
+                    $response_array["assignment_details"][$i]->longitude = $latest_location->longitude;
+                    $response_array["assignment_details"][$i]->latitude = $latest_location->latitude;
+                    $i++;
+                }
             }
 
         } catch (Exception $e) {
@@ -81,6 +88,7 @@ class HelpRequest extends REST_Controller
             $longitude = $this->post('longitude');
             $latitude = $this->post('latitude');
             $provider_list = $this->post('provider_list');
+            $event_type = $this->post('event_type');
 
             //check if any request for this device id is pending
             if ($this->Help_request_model->getLiveHelpRequestByDeviceId($device_id) != null) {
@@ -92,7 +100,7 @@ class HelpRequest extends REST_Controller
                     $age, $bloog_group,
                     $special_conditions,
                     $device_id,
-                    $longitude, $latitude, $provider_list);
+                    $longitude, $latitude, $provider_list, $event_type);
             }
 
         } catch (Exception $e) {
