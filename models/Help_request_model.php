@@ -50,6 +50,22 @@ class Help_request_model extends CI_Model
 
     }
 
+    public function addServiceProvider($help_request_id, $provider_name)
+    {
+        $result = false;
+
+        if (!$this->serviceProviderExistsForHelpRequest($help_request_id, $provider_name)) {
+            $data_provider = array(
+                'help_request_id' => $help_request_id,
+                'needed_provider_id' => $provider_name,
+            );
+            $this->db->insert('help_request_provider_need', $data_provider);
+            $result = true;            
+        }
+
+        return $result;
+    }
+
     public function getLiveHelpRequestByDeviceId($device_id)
     {
         $query = $this->db->get_where('help_request', array('device_id' => $device_id, 'status' => 'PENDING'));
@@ -58,6 +74,17 @@ class Help_request_model extends CI_Model
             return $query->first_row();
         } else {
             return null;
+        }
+    }
+
+    public function serviceProviderExistsForHelpRequest($help_request_id, $provider_name)
+    {
+        $query = $this->db->get_where('help_request_provider_need', array('help_request_id' => $help_request_id, 'needed_provider_id' => $provider_name));
+
+        if ($query->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 

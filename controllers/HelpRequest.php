@@ -114,6 +114,37 @@ class HelpRequest extends REST_Controller
 
     }
 
+    //initiate help request
+    public function addServiceProvider_post()
+    {
+
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+        );
+
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Help_request_model');
+
+            //get parameters
+            $help_request_id = $this->post('help_request_id');
+            $provider_name = $this->post('provider_name');
+
+            $result = $this->Help_request_model->addServiceProvider($help_request_id, $provider_name);
+
+            $response_array['status'] = $result;
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+
+        $this->response($response_array);
+
+    }
+
     //cancel help request
     public function cancel_post()
     {
