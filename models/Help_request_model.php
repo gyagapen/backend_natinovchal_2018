@@ -60,7 +60,7 @@ class Help_request_model extends CI_Model
                 'needed_provider_id' => $provider_name,
             );
             $this->db->insert('help_request_provider_need', $data_provider);
-            $result = true;            
+            $result = true;
         }
 
         return $result;
@@ -72,6 +72,25 @@ class Help_request_model extends CI_Model
 
         if ($query->num_rows() > 0) {
             return $query->first_row();
+        } else {
+            return null;
+        }
+    }
+
+    public function getLiveHelpRequestByProviderType($service_provider_type)
+    {
+
+        $this->db->select('help_request.*');
+        $this->db->from('help_request');
+        $this->db->where('help_request_provider_need.needed_provider_id', $service_provider_type);
+        $this->db->where('status', 'PENDING');
+        $this->db->join('help_request_provider_need', 'help_request_provider_need.help_request_id = help_request.id');
+        
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result();
         } else {
             return null;
         }
@@ -139,5 +158,7 @@ class Help_request_model extends CI_Model
         $this->db->set('date_time', 'NOW()', false);
         $this->db->insert('help_request_location', $data_location);
     }
+
+
 
 }

@@ -59,6 +59,75 @@ class HelpRequest extends REST_Controller
         $this->response($response_array);
     }
 
+    public function retrievePendingRequestForProvider_get()
+    {
+        //get help request for a device
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+            'help_details' => null,
+            'assignment_details' => null,
+        );
+
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Help_request_model');
+            $this->load->model('Patrol_model');
+
+            //get parameters
+            $service_provider_type = $this->get('service_provider_type');
+            $service_provider_longitude = $this->get('longitude');
+            $service_provider_latitude = $this->get('latitude');
+
+            //retrieve help details
+            $help_details = $this->Help_request_model->getLiveHelpRequestByProviderType($service_provider_type);
+            //$response_array["help_details"] = $help_details;
+
+            if ($help_details != null) {
+                foreach ($help_details as $help) {
+
+                    $needed_providers = $this->Help_request_model->getNeededProviders($help->id);
+                    $provider_list = "";
+                    foreach ($needed_providers as $provider) {
+                        $provider_list = $provider_list . $provider->needed_provider_id . "|";
+
+                    }
+                    $help->requested_providers = $provider_list;
+
+                    //get latest location
+                    $helpRequestLatestPosition = $this->Help_request_model->retrieveLatestHelpRequestorPosition($help->id);
+                    $help->latest_position = $helpRequestLatestPosition;
+
+                    //compute new ETA and distance
+                    $computed_dist = GetDrivingDistance($helpRequestLatestPosition->latitude, $service_provider_latitude, $helpRequestLatestPosition->longitude, $service_provider_longitude);
+                    $help->latest_position->computed_distance = $computed_dist;
+
+                    //assignment details
+                    $assignment_details = $this->Patrol_model->getAssignedPatrols($help->id);
+                    $help->assignment_details = $assignment_details;
+                    $i = 0;
+                    if ($assignment_details != null) {
+                        foreach ($assignment_details as $assignment) {
+                            $patrol_id = $assignment->patrol_id;
+                            $latest_location = $this->Patrol_model->getPatrolLatestLocation($patrol_id);
+                            $help->assignment_details[$i]->longitude = $latest_location->longitude;
+                            $help->assignment_details[$i]->latitude = $latest_location->latitude;
+                            $i++;
+                        }
+                    }
+                }
+            }
+
+            $response_array["help_details"] = $help_details;
+
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+        $this->response($response_array);
+    }
+
     public function index_post()
     {
 
