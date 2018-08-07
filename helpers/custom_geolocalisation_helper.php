@@ -4,7 +4,7 @@ function GetDrivingDistance($lat1, $lat2, $long1, $long2)
 {
     $api_key = "AIzaSyAlkhD1qBW_mFJE6x9EZHMCChSgGreL7rw";
 
-    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$lat1.",".$long1."&destinations=".$lat2.",".$long2."&mode=driving&key=".$api_key;
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" . $lat1 . "," . $long1 . "&destinations=" . $lat2 . "," . $long2 . "&mode=driving&key=" . $api_key;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -17,6 +17,9 @@ function GetDrivingDistance($lat1, $lat2, $long1, $long2)
     $dist = $response_a['rows'][0]['elements'][0]['distance']['text'];
     $time = $response_a['rows'][0]['elements'][0]['duration']['text'];
 
-    //return $response;    
-    return array('distance' => $dist, 'time' => $time);
+    $destination_address = $response_a['destination_addresses'][0];
+    $origin_address = $response_a['origin_addresses'][0];
+
+    //return $response;
+    return array('distance' => $dist, 'time' => $time, 'destination_address' => $destination_address, 'origin_address' => $origin_address);
 }

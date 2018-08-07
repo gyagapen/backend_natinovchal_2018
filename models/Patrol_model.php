@@ -21,12 +21,13 @@ class Patrol_model extends CI_Model
         return $query->first_row();
     }
 
-    public function assignPatrol($help_request_id, $patrol_id)
+    public function assignPatrol($help_request_id, $patrol_id, $patrol_type)
     {
         //assign patrol to help request
         $data = array(
             'help_request_id' => $help_request_id,
             'patrol_id' => $patrol_id,
+            'service_provider_type' => $patrol_type,
             'status' => 'TRANSIT',
         );
         $this->db->insert('service_provider_patrol_assignment', $data);

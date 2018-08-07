@@ -27,10 +27,11 @@ class Patrol extends REST_Controller
             $longitude = $this->post('longitude');
             $latitude = $this->post('latitude');
             $device_id = $this->post('device_id');
+            $patrol_type = $this->post('patrol_type');
 
             //assign patrol
             if ($this->Patrol_model->getAssignedHelpRequest($help_request_id, $patrol_id) == null) {
-                $insert_id = $this->Patrol_model->assignPatrol($help_request_id, $patrol_id);
+                $insert_id = $this->Patrol_model->assignPatrol($help_request_id, $patrol_id, $patrol_type);
             } else {
                 throw new Exception('Patrol already assigned');
             }
@@ -39,7 +40,7 @@ class Patrol extends REST_Controller
             $result = $this->updateHelpRequestStatusFromPatrol($help_request_id, $patrol_id, $latitude, $longitude, $device_id);
 
             $response_array["id"] = $insert_id;
-            $response_array["distance"] = $result["distance "];
+            $response_array["distance"] = $result["distance"];
             $response_array["ETA"] = $result["time"];
 
         } catch (Exception $e) {
