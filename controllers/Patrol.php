@@ -82,9 +82,103 @@ class Patrol extends REST_Controller
 
     }
 
+    public function infoPerDeviceName_get()
+    {
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+            'patrol_info' => null,
+        );
+
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Patrol_model');
+
+            //get parameters
+            $device_id = $this->get('device_id');
+
+            $patrol_info = $this->Patrol_model->getPatrolInfo($device_id);
+
+            $response_array["patrol_info"] = $patrol_info;
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+        $this->response($response_array);
+    }
+
+    public function registerPatrol_post()
+    {
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+            'id' => "",
+        );
+
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Patrol_model');
+
+            //get parameters
+            $device_id = $this->post('device_id');
+            $desc = $this->post('desc');
+            $provider = $this->post('provider');
+            $token = $this->post('token');
+
+            //check if not already assigned
+            $patrol_info = $this->Patrol_model->getPatrolInfo($device_id);
+            if ($patrol_info == null) {
+                $insert_id = $this->Patrol_model->insertPatrolInfo($desc, $device_id,$provider, $token);
+                $response_array["id"] = $insert_id;
+            } else {
+                $response_array["status"] = false;
+                $response_array["error"] = "Patrol already assigned";
+            }
+
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+
+        $this->response($response_array);
+    }
+
+    public function updatePatrolRegistration_post()
+    {
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+        );
+
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Patrol_model');
+
+            //get parameters
+            $device_id = $this->post('device_id');
+            $provider = $this->post('provider');
+
+            //check if not already assigned
+
+            $this->Patrol_model->updatePatrolInfo($device_id,$provider);
+            
+
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+
+        $this->response($response_array);
+    }
+
     public function test_get()
     {
-        $token_ids = array ('d8DozVGRcGI:APA91bH5KohTrBn8U5-6aPyHq09Hal_L8NC6QqJu4RSsQg0zu_9v-60hWAm33DjaKda-RsvQRL_PM60lH9TbJgNk7TrcEma0a3RmtzDU_nfiaA4vOVSLEWZLKc13h-9ZbOCZj6_TanRdeNAtkqoykx9PYj88_NXtPQ');
+        $token_ids = array('d8DozVGRcGI:APA91bH5KohTrBn8U5-6aPyHq09Hal_L8NC6QqJu4RSsQg0zu_9v-60hWAm33DjaKda-RsvQRL_PM60lH9TbJgNk7TrcEma0a3RmtzDU_nfiaA4vOVSLEWZLKc13h-9ZbOCZj6_TanRdeNAtkqoykx9PYj88_NXtPQ');
 
         //$result = sendFireBaseNotif($token_ids, 'test','100',$title=null,$sub_title=null,$device_type=null,$data = null,$content_available = null);
         $result = sendInitiationRequestNotif($token_ids);

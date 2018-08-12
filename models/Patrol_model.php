@@ -128,5 +128,46 @@ class Patrol_model extends CI_Model
         }
     }
 
+    public function getPatrolInfo($device_id)
+    {
+        $this->db->where('device_id',$device_id);
+        $query = $this->db->get('service_provider_patrol');
+
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return null;
+        }
+    }
+
+    public function insertPatrolInfo($desc, $device_id,$provider, $token)
+    {
+        //insert position into db
+        $data = array(
+            'description' => $desc,
+            'device_id' => $device_id,
+            'service_provider_id' => $provider,
+            'token' => $token
+        );
+
+        $this->db->insert('service_provider_patrol', $data);
+        $insert_id = $this->db->insert_id();
+
+        return $insert_id;
+    }
+
+    public function updatePatrolInfo($device_id, $provider)
+    {
+         //insert position into db
+         $data = array(
+            'service_provider_id' => $provider,
+        );
+
+        $this->db->where('device_id', $device_id);
+        $this->db->update('service_provider_patrol', $data);
+    }
+
+
+
 
 }
