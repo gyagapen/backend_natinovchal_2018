@@ -82,6 +82,17 @@ class Patrol extends REST_Controller
 
     }
 
+    public function test_get()
+    {
+        $token_ids = array ('d8DozVGRcGI:APA91bH5KohTrBn8U5-6aPyHq09Hal_L8NC6QqJu4RSsQg0zu_9v-60hWAm33DjaKda-RsvQRL_PM60lH9TbJgNk7TrcEma0a3RmtzDU_nfiaA4vOVSLEWZLKc13h-9ZbOCZj6_TanRdeNAtkqoykx9PYj88_NXtPQ');
+
+        //$result = sendFireBaseNotif($token_ids, 'test','100',$title=null,$sub_title=null,$device_type=null,$data = null,$content_available = null);
+        $result = sendInitiationRequestNotif($token_ids);
+
+        $this->response($result);
+
+    }
+
     /************ PRIVATE FUNCTIONS ***************/
 
     private function updateHelpRequestStatusFromPatrol($help_request_id, $patrol_id, $latitude, $longitude, $device_id)

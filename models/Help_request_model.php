@@ -44,7 +44,11 @@ class Help_request_model extends CI_Model
                 'needed_provider_id' => $provider,
             );
             $this->db->insert('help_request_provider_need', $data_provider);
+
         }
+
+        
+
 
         return $insert_id;
 

@@ -149,6 +149,7 @@ class HelpRequest extends REST_Controller
         {
             $this->CI = &get_instance();
             $this->load->model('Help_request_model');
+            $this->load->model('Patrol_model');
 
             //get parameters
             $customer_name = $this->post('customer_name');
@@ -172,6 +173,21 @@ class HelpRequest extends REST_Controller
                     $special_conditions,
                     $device_id,
                     $longitude, $latitude, $provider_list, $event_type);
+
+                //select all concerned patrols and send push notifications
+                $providers = explode("|", $provider_list);
+                $array_tokens = array();
+                foreach ($providers as $provider) {
+                    $array_prov_tokens = $this->Patrol_model->getProviderPatrolsTokenIds($provider);
+                    if ($array_prov_tokens != null) {
+                        foreach ($array_prov_tokens as $patrol_record) {
+                            $array_tokens[] = $patrol_record["token"];
+                        }
+                    }
+                }
+                $result_notif = sendInitiationRequestNotif($array_tokens);
+                $response_array["notification_sent"] = $result_notif;
+
             }
 
         } catch (Exception $e) {
@@ -197,12 +213,24 @@ class HelpRequest extends REST_Controller
         {
             $this->CI = &get_instance();
             $this->load->model('Help_request_model');
+            $this->load->model('Patrol_model');
 
             //get parameters
             $help_request_id = $this->post('help_request_id');
             $provider_name = $this->post('provider_name');
 
             $result = $this->Help_request_model->addServiceProvider($help_request_id, $provider_name);
+
+            //select all concerned patrols and send push notifications
+            $array_tokens = array();
+            $array_prov_tokens = $this->Patrol_model->getProviderPatrolsTokenIds($provider_name);
+            if ($array_prov_tokens != null) {
+                foreach ($array_prov_tokens as $patrol_record) {
+                    $array_tokens[] = $patrol_record["token"];
+                }
+
+            }
+            sendInitiationRequestNotif($array_tokens);
 
             $response_array['status'] = $result;
         } catch (Exception $e) {
