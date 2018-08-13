@@ -98,6 +98,17 @@ class Patrol_model extends CI_Model
         $this->db->update('service_provider_patrol_assignment', $data);
     }
 
+    public function updateStatusByPatrolId($help_request_id, $patrol_id, $new_status)
+    {
+        $data = array(
+            'status' => $new_status,
+        );
+
+        $this->db->where('patrol_id', $patrol_id);
+        $this->db->where('help_request_id', $help_request_id);
+        $this->db->update('service_provider_patrol_assignment', $data);
+    }
+
     public function getAssignedPatrols($help_request_id)
     {
         $this->db->where('help_request_id', $help_request_id);
@@ -111,6 +122,7 @@ class Patrol_model extends CI_Model
             return null;
         }
     }
+
 
 
     public function getProviderPatrolsTokenIds($provider)
@@ -156,17 +168,33 @@ class Patrol_model extends CI_Model
         return $insert_id;
     }
 
-    public function updatePatrolInfo($device_id, $provider)
+    public function updatePatrolInfo($device_id, $provider, $description)
     {
          //insert position into db
          $data = array(
             'service_provider_id' => $provider,
+            'description' => $description,
         );
 
         $this->db->where('device_id', $device_id);
         $this->db->update('service_provider_patrol', $data);
     }
 
+
+    public function getCompletedAssignment($help_request_id, $provider_id)
+    {
+        $this->db->where('help_request_id', $help_request_id);
+        $this->db->where('service_provider_type', $provider_id);
+        $this->db->where('status', 'ARRIVED');
+
+        $query = $this->db->get('service_provider_patrol_assignment');
+
+        if ($query->num_rows() > 0) {
+            return $query->first_row();
+        } else {
+            return null;
+        }
+    }
 
 
 

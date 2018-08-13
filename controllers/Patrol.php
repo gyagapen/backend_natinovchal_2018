@@ -131,7 +131,7 @@ class Patrol extends REST_Controller
             //check if not already assigned
             $patrol_info = $this->Patrol_model->getPatrolInfo($device_id);
             if ($patrol_info == null) {
-                $insert_id = $this->Patrol_model->insertPatrolInfo($desc, $device_id,$provider, $token);
+                $insert_id = $this->Patrol_model->insertPatrolInfo($desc, $device_id, $provider, $token);
                 $response_array["id"] = $insert_id;
             } else {
                 $response_array["status"] = false;
@@ -162,11 +162,60 @@ class Patrol extends REST_Controller
             //get parameters
             $device_id = $this->post('device_id');
             $provider = $this->post('provider');
+            $description = $this->post('description');
 
-            //check if not already assigned
+            $this->Patrol_model->updatePatrolInfo($device_id, $provider, $description);
 
-            $this->Patrol_model->updatePatrolInfo($device_id,$provider);
-            
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+
+        $this->response($response_array);
+    }
+
+    public function logPatrolArrival_post()
+    {
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+            'all_arrived' => "",
+        );
+
+        try
+        {
+            $this->CI = &get_instance();
+            $this->load->model('Patrol_model');
+            $this->load->model('Help_request_model');
+
+            //get parameters
+            $patrol_id = $this->post('patrol_id');
+            $help_request_id = $this->post('help_request_id');
+
+            //update status
+            $this->Patrol_model->updateStatusByPatrolId($help_request_id, $patrol_id, "ARRIVED");
+
+            //check global status
+            $all_arrived = true;
+            //for each needed provider
+            $needed_providers = $this->Help_request_model->getNeededProviders($help_request_id);
+            foreach ($needed_providers as $provider) {
+                $provider_id = $provider->needed_provider_id;
+                //check if any completed assignment
+                $arrivedAssignment = $this->Patrol_model->getCompletedAssignment($help_request_id, $provider_id);
+                if ($arrivedAssignment == null) {
+                    $all_arrived = false;
+                    break;
+                }
+            }
+
+            if ($all_arrived) {
+                //update status of request to COMPLETED
+                $this->Help_request_model->updateRequestStatus($help_request_id, "COMPLETED");
+            }
+
+            $response_array["all_arrived"] = $all_arrived;
 
         } catch (Exception $e) {
             $response_array["status"] = false;

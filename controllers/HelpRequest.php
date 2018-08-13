@@ -81,18 +81,30 @@ class HelpRequest extends REST_Controller
             $service_provider_latitude = $this->get('latitude');
 
             //retrieve help details
+            $helpRequestList = array();
+
             $help_details = $this->Help_request_model->getLiveHelpRequestByProviderType($service_provider_type);
             //$response_array["help_details"] = $help_details;
 
             if ($help_details != null) {
                 foreach ($help_details as $help) {
 
+                    $already_completed = false;
+
                     $needed_providers = $this->Help_request_model->getNeededProviders($help->id);
                     $provider_list = "";
                     foreach ($needed_providers as $provider) {
                         $provider_list = $provider_list . $provider->needed_provider_id . "|";
-
+                        //check if any completed assignment
+                        if ($provider->needed_provider_id == $service_provider_type) {
+                            $arrivedAssignment = $this->Patrol_model->getCompletedAssignment($help->id, $service_provider_type);
+                            if ($arrivedAssignment != null) {
+                                $already_completed = true;
+                                break;
+                            }
+                        }
                     }
+
                     $help->requested_providers = $provider_list;
 
                     //get latest location
@@ -116,10 +128,15 @@ class HelpRequest extends REST_Controller
                             $i++;
                         }
                     }
+
+                    if (!$already_completed) {
+                        $helpRequestList[] = $help;
+                    }
                 }
+
             }
 
-            $response_array["help_details"] = $help_details;
+            $response_array["help_details"] = $helpRequestList;
 
         } catch (Exception $e) {
             $response_array["status"] = false;
