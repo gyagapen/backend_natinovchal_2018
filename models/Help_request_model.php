@@ -81,6 +81,17 @@ class Help_request_model extends CI_Model
         }
     }
 
+    public function getLiveHelpRequestById($help_request_id)
+    {
+        $query = $this->db->get_where('help_request', array('id' => $help_request_id));
+
+        if ($query->num_rows() > 0) {
+            return $query->first_row();
+        } else {
+            return null;
+        }
+    }
+
     public function getLiveHelpRequestByProviderType($service_provider_type)
     {
 

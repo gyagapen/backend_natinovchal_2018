@@ -225,6 +225,32 @@ class Patrol extends REST_Controller
         $this->response($response_array);
     }
 
+    public function updatePatrolPosition_post()
+    {
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+        );
+
+        try
+        {
+            //get parameters
+            $patrol_id = $this->post('patrol_id');
+            $help_request_id = $this->post('help_request_id');
+            $longitude = $this->post('longitude');
+            $latitude = $this->post('latitude');
+
+            $this->updateHelpRequestStatusFromPatrol($help_request_id, $patrol_id, $latitude, $longitude, "");
+
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+
+        $this->response($response_array);
+    }
+
     public function test_get()
     {
         $token_ids = array('d8DozVGRcGI:APA91bH5KohTrBn8U5-6aPyHq09Hal_L8NC6QqJu4RSsQg0zu_9v-60hWAm33DjaKda-RsvQRL_PM60lH9TbJgNk7TrcEma0a3RmtzDU_nfiaA4vOVSLEWZLKc13h-9ZbOCZj6_TanRdeNAtkqoykx9PYj88_NXtPQ');

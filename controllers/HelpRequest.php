@@ -22,9 +22,15 @@ class HelpRequest extends REST_Controller
 
             //get parameters
             $device_id = $this->get('device_id');
+            $type = $this->get('type');
 
             //retrieve help details
-            $help_details = $this->Help_request_model->getLiveHelpRequestByDeviceId($device_id);
+            if ($type == "UID") {
+                $help_details = $this->Help_request_model->getLiveHelpRequestByDeviceId($device_id);
+            } else {
+                $help_details = $this->Help_request_model->getLiveHelpRequestById($device_id);
+            }
+
             $response_array["help_details"] = $help_details;
 
             if ($help_details != null) {
