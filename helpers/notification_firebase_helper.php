@@ -7,6 +7,13 @@ function sendInitiationRequestNotif($deviceTokens)
         return sendFireBaseNotif($deviceTokens, $message, $title);
 }
 
+function sendCancellationNotif($token)
+{
+        $title = "CANCELLATION";
+        $message = "Your assignment has been CANCELLED";
+        return sendFireBaseNotif(array($token), $message, $title);
+}
+
 function sendFireBaseNotif($deviceTokens, $message,$title=null,$sub_title=null,$device_type=null,$data = null,$content_available = null, $type = 'high')
 {
 

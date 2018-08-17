@@ -47,7 +47,7 @@ class Circle_model extends CI_Model
         $query = $this->db->get('circle_details');
 
         if ($query->num_rows() > 0) {
-            return $query->first_row();
+            return $query->result();
         } else {
             return null;
         }

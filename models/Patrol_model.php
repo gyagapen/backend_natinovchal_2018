@@ -123,13 +123,11 @@ class Patrol_model extends CI_Model
         }
     }
 
-
-
     public function getProviderPatrolsTokenIds($provider)
     {
-        $this->db->where('service_provider_id',$provider);
-        $this->db->where('token is NOT NULL', NULL, FALSE);
-        $this->db->where("token <>''", NULL, FALSE);
+        $this->db->where('service_provider_id', $provider);
+        $this->db->where('token is NOT NULL', null, false);
+        $this->db->where("token <>''", null, false);
 
         $query = $this->db->get('service_provider_patrol');
 
@@ -142,7 +140,7 @@ class Patrol_model extends CI_Model
 
     public function getPatrolInfo($device_id)
     {
-        $this->db->where('device_id',$device_id);
+        $this->db->where('device_id', $device_id);
         $query = $this->db->get('service_provider_patrol');
 
         if ($query->num_rows() > 0) {
@@ -152,14 +150,27 @@ class Patrol_model extends CI_Model
         }
     }
 
-    public function insertPatrolInfo($desc, $device_id,$provider, $token)
+    public function getPatrolInfoById($patrol_id)
+    {
+        $this->db->where('id', $patrol_id);
+        $query = $this->db->get('service_provider_patrol');
+
+        if ($query->num_rows() > 0) {
+            return $query->first_row();
+        } else {
+            return null;
+        }
+    }
+
+    public function insertPatrolInfo($desc, $device_id, $provider, $token, $mobile_number)
     {
         //insert position into db
         $data = array(
             'description' => $desc,
             'device_id' => $device_id,
             'service_provider_id' => $provider,
-            'token' => $token
+            'token' => $token,
+            'mobile_number' => $mobile_number,
         );
 
         $this->db->insert('service_provider_patrol', $data);
@@ -168,18 +179,19 @@ class Patrol_model extends CI_Model
         return $insert_id;
     }
 
-    public function updatePatrolInfo($device_id, $provider, $description)
+    public function updatePatrolInfo($device_id, $provider, $description, $mobile_number)
     {
-         //insert position into db
-         $data = array(
+        //insert position into db
+        $data = array(
             'service_provider_id' => $provider,
             'description' => $description,
+            'mobile_number' => $mobile_number,
+
         );
 
         $this->db->where('device_id', $device_id);
         $this->db->update('service_provider_patrol', $data);
     }
-
 
     public function getCompletedAssignment($help_request_id, $provider_id)
     {
@@ -195,7 +207,5 @@ class Patrol_model extends CI_Model
             return null;
         }
     }
-
-
 
 }

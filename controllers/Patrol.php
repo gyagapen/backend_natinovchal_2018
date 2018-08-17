@@ -127,11 +127,12 @@ class Patrol extends REST_Controller
             $desc = $this->post('desc');
             $provider = $this->post('provider');
             $token = $this->post('token');
+            $mobile_number = $this->post('mobile_number');
 
             //check if not already assigned
             $patrol_info = $this->Patrol_model->getPatrolInfo($device_id);
             if ($patrol_info == null) {
-                $insert_id = $this->Patrol_model->insertPatrolInfo($desc, $device_id, $provider, $token);
+                $insert_id = $this->Patrol_model->insertPatrolInfo($desc, $device_id, $provider, $token, $mobile_number);
                 $response_array["id"] = $insert_id;
             } else {
                 $response_array["status"] = false;
@@ -163,8 +164,9 @@ class Patrol extends REST_Controller
             $device_id = $this->post('device_id');
             $provider = $this->post('provider');
             $description = $this->post('description');
+            $mobile_number = $this->post('mobile_number');
 
-            $this->Patrol_model->updatePatrolInfo($device_id, $provider, $description);
+            $this->Patrol_model->updatePatrolInfo($device_id, $provider, $description, $mobile_number);
 
         } catch (Exception $e) {
             $response_array["status"] = false;

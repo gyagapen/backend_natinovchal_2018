@@ -279,12 +279,27 @@ class HelpRequest extends REST_Controller
         {
             $this->CI = &get_instance();
             $this->load->model('Help_request_model');
+            $this->load->model('Patrol_model');
 
             //get parameters
             $request_id = $this->post('request_id');
 
-            //check if any request for this device id is pending
+            //perform cancellation
             $this->Help_request_model->updateRequestStatus($request_id, "CANCELLED");
+
+            //inform assigned patrols
+
+            //assignment details
+            $assignment_details = $this->Patrol_model->getAssignedPatrols($request_id);
+            if ($assignment_details != null) {
+                foreach ($assignment_details as $assignment) {
+                    $patrol_id = $assignment->patrol_id;
+                    //retrieve token
+                    $patrol_info = $this->Patrol_model->getPatrolInfoById($patrol_id);
+                    $token = $patrol_info->token;
+                    sendCancellationNotif($token);
+                }
+            }
 
         } catch (Exception $e) {
             $response_array["status"] = false;
