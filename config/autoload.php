@@ -89,7 +89,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('custom_geolocalisation', 'notification_firebase');
+$autoload['helper'] = array('custom_geolocalisation', 'notification_firebase', 'send_sms');
 
 /*
 | -------------------------------------------------------------------

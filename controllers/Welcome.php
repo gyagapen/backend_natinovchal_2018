@@ -24,22 +24,25 @@ class Welcome extends CI_Controller
 
         $this->load->model('Patrol_model');
 
-        $provider_list = "SAMU|POLICE|FIREMEN";
+        /*$provider_list = "SAMU|POLICE|FIREMEN";
         //select all concerned patrols and send push notifications
         $providers = explode("|", $provider_list);
         $array_tokens = array();
         foreach ($providers as $provider) {
-			$array_prov_tokens = $this->Patrol_model->getProviderPatrolsTokenIds($provider);
-			if ($array_prov_tokens != null) {
-            foreach ($array_prov_tokens as $patrol_record) {
-                    $array_tokens[] = $patrol_record["token"];
-                }
-            }
+        $array_prov_tokens = $this->Patrol_model->getProviderPatrolsTokenIds($provider);
+        if ($array_prov_tokens != null) {
+        foreach ($array_prov_tokens as $patrol_record) {
+        $array_tokens[] = $patrol_record["token"];
+        }
+        }
         }
 
-		print_r($array_tokens);
-		$result_notif = sendInitiationRequestNotif($token_ids);
-		print_r($result_notif);
+        print_r($array_tokens);
+        $result_notif = sendInitiationRequestNotif($token_ids);
+        print_r($result_notif);*/
+
+        //$result = sendAngelNotificationSMS("+23059807708", "Health", "Cedric");
+        //print_r($result);
 
         $this->load->view('welcome_message');
     }

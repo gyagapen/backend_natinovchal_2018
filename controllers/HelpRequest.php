@@ -165,6 +165,7 @@ class HelpRequest extends REST_Controller
             'status' => true,
             'error' => "",
             'id' => "",
+            'sms_status' => "",
         );
 
         $insert_id = "";
@@ -173,6 +174,7 @@ class HelpRequest extends REST_Controller
             $this->CI = &get_instance();
             $this->load->model('Help_request_model');
             $this->load->model('Patrol_model');
+            $this->load->model('Circle_model');
 
             //get parameters
             $customer_name = $this->post('customer_name');
@@ -210,6 +212,25 @@ class HelpRequest extends REST_Controller
                 }
                 $result_notif = sendInitiationRequestNotif($array_tokens);
                 $response_array["notification_sent"] = $result_notif;
+
+                //send sms to angels
+                $sms_status = array();
+                $circles = $this->Circle_model->getCirclesForDeviceId($device_id);
+                if ($circles != null) {
+                    foreach ($circles as $circle) {
+                        $result = sendAngelNotificationSMS("+230" . $circle->contact_number, $event_type, $customer_name);
+                        if ($result['http_status'] != 201) {
+                            $error = "Phone number: " . "+230" . $circle->contact_number;
+                            $error = $error . ". Error sending.  HTTP status " . $result['http_status'];
+                            $error = $error . ". Response was " . $result['server_response'];
+                            $sms_status[] = $error;
+                        } else {
+                            $sms_status[] = $result['server_response'];
+                            // Use json_decode($result['server_response']) to work with the response further
+                        }
+                    }
+                    $response_array["sms_status"] = $sms_status;
+                }
 
             }
 
