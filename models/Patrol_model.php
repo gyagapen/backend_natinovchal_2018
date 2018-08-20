@@ -208,4 +208,12 @@ class Patrol_model extends CI_Model
         }
     }
 
+    public function purgePatrolLocation()
+    {
+        $sql = "DELETE FROM service_provider_patrol_location WHERE date_time < DATE_SUB(NOW(), INTERVAL 12 HOUR)";
+        $query = $this->db->query($sql);
+
+        //return $query->result_array();
+    }
+
 }

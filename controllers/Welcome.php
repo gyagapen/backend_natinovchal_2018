@@ -41,8 +41,7 @@ class Welcome extends CI_Controller
         $result_notif = sendInitiationRequestNotif($token_ids);
         print_r($result_notif);*/
 
-        $result = sendAngelNotificationSMS("59807708", "Health", "Cedric");
-        print_r($result);
+        $result = $this->Patrol_model->purgePatrolLocation();
 
         $this->load->view('welcome_message');
     }
