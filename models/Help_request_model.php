@@ -12,7 +12,7 @@ class Help_request_model extends CI_Model
         $this->load->database();
     }
 
-    public function initiateHelpRequest($customer_name, $age, $bloog_group, $special_conditions, $device_id, $longitude, $latitude, $provider_list, $event_type)
+    public function initiateHelpRequest($customer_name, $age, $bloog_group, $special_conditions, $device_id, $longitude, $latitude, $provider_list, $event_type, $nic)
     {
         //insert help request
         $data = array(
@@ -22,7 +22,9 @@ class Help_request_model extends CI_Model
             'special_conditions' => $special_conditions,
             'device_id' => $device_id,
             'status' => 'PENDING',
-            'event_type' => $event_type);
+            'event_type' => $event_type,
+            'NIC' => $nic
+        );
 
         $this->db->insert('help_request', $data);
         $insert_id = $this->db->insert_id();

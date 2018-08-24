@@ -186,6 +186,7 @@ class HelpRequest extends REST_Controller
             $latitude = $this->post('latitude');
             $provider_list = $this->post('provider_list');
             $event_type = $this->post('event_type');
+            $nic = $this->post('nic');
 
             //check if any request for this device id is pending
             if ($this->Help_request_model->getLiveHelpRequestByDeviceId($device_id) != null) {
@@ -197,7 +198,7 @@ class HelpRequest extends REST_Controller
                     $age, $bloog_group,
                     $special_conditions,
                     $device_id,
-                    $longitude, $latitude, $provider_list, $event_type);
+                    $longitude, $latitude, $provider_list, $event_type, $nic);
 
                 //select all concerned patrols and send push notifications
                 $providers = explode("|", $provider_list);
