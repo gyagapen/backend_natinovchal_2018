@@ -221,15 +221,6 @@ class HelpRequest extends REST_Controller
                     foreach ($circles as $circle) {
                         $result = sendAngelNotificationSMS($circle->contact_number, $event_type, $customer_name);
                         $sms_status[] = $result;
-                        /*if ($result['http_status'] != 201) {
-                    $error = "Phone number: " . "+230" . $circle->contact_number;
-                    $error = $error . ". Error sending.  HTTP status " . $result['http_status'];
-                    $error = $error . ". Response was " . $result['server_response'];
-                    $sms_status[] = $error;
-                    } else {
-                    $sms_status[] = $result['server_response'];
-                    // Use json_decode($result['server_response']) to work with the response further
-                    }*/
                     }
                     $response_array["sms_status"] = $sms_status;
                 }

@@ -6,6 +6,13 @@ function sendAngelNotificationSMS($number, $event_type, $requestor_name)
     return callSMSAPI($number, urlencode($msg));
 }
 
+
+function sendAngelNotificationSMSArrived($number, $provider_name, $requestor_name)
+{
+    $msg = $provider_name." has reached ".$requestor_name . "! Please log into Mausafe for more details";
+    return callSMSAPI($number, urlencode($msg));
+}
+
 /*function callSMSAPI($number, $msg)
 {
 $username = 'FAF42EDB53594758865C042BA04687DF-02-3';

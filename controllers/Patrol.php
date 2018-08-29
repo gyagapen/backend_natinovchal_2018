@@ -183,6 +183,7 @@ class Patrol extends REST_Controller
             'status' => true,
             'error' => "",
             'all_arrived' => "",
+            'sms_status' => "",
         );
 
         try
@@ -190,10 +191,12 @@ class Patrol extends REST_Controller
             $this->CI = &get_instance();
             $this->load->model('Patrol_model');
             $this->load->model('Help_request_model');
+            $this->load->model('Circle_model');
 
             //get parameters
             $patrol_id = $this->post('patrol_id');
             $help_request_id = $this->post('help_request_id');
+            $provider_name = '';
 
             //update status
             $this->Patrol_model->updateStatusByPatrolId($help_request_id, $patrol_id, "ARRIVED");
@@ -209,7 +212,12 @@ class Patrol extends REST_Controller
                 if ($arrivedAssignment == null) {
                     $all_arrived = false;
                     break;
+                } else {
+                    if ($arrivedAssignment->patrol_id == $patrol_id) {
+                        $provider_name = $arrivedAssignment->service_provider_type;
+                    }
                 }
+
             }
 
             if ($all_arrived) {
@@ -218,6 +226,20 @@ class Patrol extends REST_Controller
             }
 
             $response_array["all_arrived"] = $all_arrived;
+
+            //send sms to angels
+            if ($provider_name != '') {
+                $help_request_details = $this->Help_request_model->getHelpRequestById($help_request_id);
+                $sms_status = array();
+                $circles = $this->Circle_model->getCirclesForDeviceId($help_request_details->device_id);
+                if ($circles != null) {
+                    foreach ($circles as $circle) {
+                        $result = sendAngelNotificationSMSArrived($circle->contact_number, $provider_name, $help_request_details->name);
+                        $sms_status[] = $result;
+                    }
+                    $response_array["sms_status"] = $sms_status;
+                }
+            }
 
         } catch (Exception $e) {
             $response_array["status"] = false;
