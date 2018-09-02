@@ -47,9 +47,16 @@ return $output;
 
 function callSMSAPI($number, $msg)
 {
-    $username = "gyagapen";
-    $userid = "15747";
-    $handle = "5bda5896ebc7e6441db0f5c9960659c9";
+    /** g29 */
+    //$username = "gyagapen";
+    //$userid = "15747";
+    //$handle = "5bda5896ebc7e6441db0f5c9960659c9";
+
+    /** Cedric Azemia */
+    $username = "cedric.azemia";
+    $userid = "15818";
+    $handle = "d3fcc8a1336c1413e648d06980336800";
+
     $from = "MauSafe";
 
     $url = 'https://api.budgetsms.net/sendsms?username=' . $username . '&userid=' . $userid . '&handle=' . $handle . '&msg=' . $msg . '&to=%20230' . $number . '&from=' . $from;
