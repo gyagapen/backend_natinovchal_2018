@@ -177,5 +177,18 @@ class Help_request_model extends CI_Model
     }
 
 
+    public function uploadVideo($request_id, $filePath, $fileName)
+    {
+        $data = array(
+            'video' => file_get_contents($filePath),
+            'video_filename' => $fileName
+        );
+
+        $this->db->where('id', $request_id);
+        $this->db->update('help_request', $data);
+    }
+
+
+
 
 }

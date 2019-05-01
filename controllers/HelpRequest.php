@@ -386,4 +386,29 @@ class HelpRequest extends REST_Controller
         $this->response($result);
     }
 
+    public function video_post()
+    {
+
+        $file = $_FILES["video"];
+
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+            'file_info' => $file,
+        );
+
+        $this->CI = &get_instance();
+        $this->load->model('Help_request_model');
+
+        try{
+            $this->Help_request_model->uploadVideo(2, $file["tmp_name"], $file["name"]);
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+        $this->response($response_array);
+        
+    }
+
 }
