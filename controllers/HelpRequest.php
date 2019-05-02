@@ -187,6 +187,31 @@ class HelpRequest extends REST_Controller
             $provider_list = $this->post('provider_list');
             $event_type = $this->post('event_type');
             $nic = $this->post('nic');
+            $is_witness = $this->post('is_witness');
+
+            //cater for witness details
+            if($is_witness == 1)
+            {
+                $impact_type = $this->post('impact_type');
+                $building_type = $this->post('building_type');
+                $no_floors = $this->post('no_floors');
+                $samu_needed = $this->post('samu_needed');
+                $person_trapped = $this->post('person_trapped');
+
+                //process video file
+                $video_file = $_FILES["video"];
+                $video_path = $video_file["tmp_name"];
+                $video_filename = $video_file["name"];
+            } else
+            {
+                $impact_type = "";
+                $building_type = "";
+                $no_floors = 0;
+                $samu_needed = 0;
+                $person_trapped = 0;
+                $video_path = null;
+                $video_filename = "";
+            }
 
             //check if any request for this device id is pending
             if ($this->Help_request_model->getLiveHelpRequestByDeviceId($device_id) != null) {
@@ -198,7 +223,9 @@ class HelpRequest extends REST_Controller
                     $age, $bloog_group,
                     $special_conditions,
                     $device_id,
-                    $longitude, $latitude, $provider_list, $event_type, $nic);
+                    $longitude, $latitude, $provider_list, $event_type, $nic,
+                    $is_witness, $impact_type, $building_type, $no_floors, $samu_needed,
+                    $person_trapped, $video_path, $video_filename);
 
                 //select all concerned patrols and send push notifications
                 $providers = explode("|", $provider_list);

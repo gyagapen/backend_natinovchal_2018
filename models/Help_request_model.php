@@ -12,7 +12,10 @@ class Help_request_model extends CI_Model
         $this->load->database();
     }
 
-    public function initiateHelpRequest($customer_name, $age, $bloog_group, $special_conditions, $device_id, $longitude, $latitude, $provider_list, $event_type, $nic)
+    public function initiateHelpRequest($customer_name, $age, $bloog_group, $special_conditions, 
+                                        $device_id, $longitude, $latitude, $provider_list, $event_type, $nic,
+                                        $is_witness, $impact_type, $building_type, $no_floors, $samu_needed,
+                                        $person_trapped, $video_path, $video_filename)
     {
         //insert help request
         $data = array(
@@ -23,8 +26,25 @@ class Help_request_model extends CI_Model
             'device_id' => $device_id,
             'status' => 'PENDING',
             'event_type' => $event_type,
-            'NIC' => $nic
+            'NIC' => $nic,
+            'is_witness' => $is_witness
         );
+
+        //witness details
+        if($is_witness == 1)
+        {
+            $data_witness = array(
+                'impact_type' => $impact_type,
+                'building_type' => $building_type,
+                'no_floors' => $no_floors,
+                'samu_needed' => $samu_needed,
+                'person_trapped' => $person_trapped,
+                'video' => file_get_contents($video_path),
+                'video_filename' => $video_filename
+            );
+
+            $data = array_merge($data, $data_witness);
+        }
 
         $this->db->insert('help_request', $data);
         $insert_id = $this->db->insert_id();
