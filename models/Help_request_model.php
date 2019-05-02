@@ -118,6 +118,8 @@ class Help_request_model extends CI_Model
     {
 
         $this->db->select('help_request.*');
+        $this->db->select('help_request_provider_need.assignment_required');
+        $this->db->select('help_request_provider_need.assigned_station');
         $this->db->from('help_request');
         $this->db->where('help_request_provider_need.needed_provider_id', $service_provider_type);
         $this->db->where('status', 'PENDING');
@@ -166,6 +168,7 @@ class Help_request_model extends CI_Model
         }
     }
 
+
     public function updateRequestStatus($request_id, $new_status)
     {
         $data = array(
@@ -173,6 +176,18 @@ class Help_request_model extends CI_Model
         );
 
         $this->db->where('id', $request_id);
+        $this->db->update('help_request', $data);
+    }
+
+
+    public function assignStationToHelpRequest($help_id, $provider_type, $station_id)
+    {
+        $data = array(
+            'assigned_station' => $station_id,
+        );
+
+        $this->db->where('help_request_id', $help_id);
+        $this->db->where('needed_provider_id', $provider_type);
         $this->db->update('help_request', $data);
     }
 

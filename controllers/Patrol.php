@@ -275,6 +275,35 @@ class Patrol extends REST_Controller
         $this->response($response_array);
     }
 
+
+    public function station_get()
+    {
+
+        //initialization
+        $response_array = array(
+            'status' => true,
+            'error' => "",
+            'station' => null,
+        );
+
+        //get parameters
+        $provider_type = $this->get('provider_type');
+
+        $this->CI = &get_instance();
+        $this->load->model('Patrol_model');
+        try{
+            $station_info = $this->Patrol_model->getAvailableStations($provider_type);
+            $response_array["station"] = $station_info;
+        } catch (Exception $e) {
+            $response_array["status"] = false;
+            $response_array["error"] = $e->getMessage();
+        }
+        
+
+        $this->response($response_array);
+
+    }
+
     public function test_get()
     {
         $token_ids = array('d8DozVGRcGI:APA91bH5KohTrBn8U5-6aPyHq09Hal_L8NC6QqJu4RSsQg0zu_9v-60hWAm33DjaKda-RsvQRL_PM60lH9TbJgNk7TrcEma0a3RmtzDU_nfiaA4vOVSLEWZLKc13h-9ZbOCZj6_TanRdeNAtkqoykx9PYj88_NXtPQ');

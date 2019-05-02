@@ -21,6 +21,18 @@ class Patrol_model extends CI_Model
         return $query->first_row();
     }
 
+    
+    public function getAvailableStations($provider_type)
+    {
+        $query = $this->db->get_where('service_provider_station', array('service_provider_id' => $provider_type));
+
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else {
+            return null;
+        }
+    }
+
     public function assignPatrol($help_request_id, $patrol_id, $patrol_type)
     {
         //assign patrol to help request
