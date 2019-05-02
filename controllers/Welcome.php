@@ -41,8 +41,44 @@ class Welcome extends CI_Controller
         $result_notif = sendInitiationRequestNotif($token_ids);
         print_r($result_notif);*/
 
-        $result = $this->Patrol_model->purgePatrolLocation();
+        //$result = $this->Patrol_model->purgePatrolLocation();
 
-        $this->load->view('welcome_message');
+        $this->load->view('login');
     }
+
+    public function requests()
+    {
+        $headers = array(
+            'x-api-key:58eb50e1-f87b-44a7-a4be-dcccd71625eb'
+        );
+
+        $payload = array(
+            'service_provider_type' => "FIREMAN",
+            'longitude' => '57.48913900',
+            'latitude' =>'-20.25491100',
+        );
+    
+        $get_url = base_url()."index.php/HelpRequest/retrievePendingRequestForProvider?service_provider_type=FIREMAN&longitude=57.48913900&latitude=-20.25491100";
+        $process = curl_init($get_url); //your API url
+        curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($process, CURLOPT_HEADER, false);
+        curl_setopt($process, CURLOPT_RETURNTRANSFER, true);
+        $return = curl_exec($process);
+        curl_close($process);
+    
+        $data["response"] = json_decode ($return) ;
+
+        $this->load->view('pending_requests', $data);
+    }
+
+    public function getVideo($id)
+    {
+        $this->load->model('Help_request_model');
+
+        $help_request = $this->Help_request_model->getHelpRequestById($id);
+        header('Content-Type: video/mp4'); 
+
+        print($help_request->video);
+    }
+
 }

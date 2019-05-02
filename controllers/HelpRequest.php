@@ -42,6 +42,7 @@ class HelpRequest extends REST_Controller
 
                 }
                 $response_array["help_details"]->requested_providers = $provider_list;
+                $response_array["help_details"]->video = "";
 
                 //assignment details
                 $assignment_details = $this->Patrol_model->getAssignedPatrols($help_details->id);
@@ -111,6 +112,7 @@ class HelpRequest extends REST_Controller
                         }
                     }
 
+                    $help->video = "";
                     $help->requested_providers = $provider_list;
 
                     //get latest location
