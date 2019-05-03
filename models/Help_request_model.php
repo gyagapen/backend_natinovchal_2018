@@ -128,7 +128,14 @@ class Help_request_model extends CI_Model
         $this->db->select('help_request_provider_need.assigned_station');
         $this->db->from('help_request');
         $this->db->where('help_request_provider_need.needed_provider_id', $service_provider_type);
-        $this->db->where('help_request_provider_need.assigned_station', $station_id);
+        
+        //-1 => retrieve all assigned request for this provider
+        if($station_id != -1){
+            $this->db->where('help_request_provider_need.assigned_station', $station_id);
+        } else{
+            $this->db->where('help_request_provider_need.assigned_station != ', '0');
+        }
+
         $this->db->where('status', 'PENDING');
         $this->db->join('help_request_provider_need', 'help_request_provider_need.help_request_id = help_request.id');
         

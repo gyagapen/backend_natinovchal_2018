@@ -60,6 +60,7 @@ class Welcome extends CI_Controller
             'latitude' =>'-20.25491100',
         );
     
+        //get unassigned requests
         $get_url = base_url()."index.php/HelpRequest/retrievePendingRequestForProvider?service_provider_type=FIREMAN&longitude=57.48913900&latitude=-20.25491100&station_id=0";
         $process = curl_init($get_url); //your API url
         curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
@@ -67,10 +68,17 @@ class Welcome extends CI_Controller
         curl_setopt($process, CURLOPT_RETURNTRANSFER, true);
         $return = curl_exec($process);
         curl_close($process);
-
-        //print_r($return);
-    
         $data["response"] = json_decode ($return) ;
+
+        //get assigned requests
+        $get_url_assigned = base_url()."index.php/HelpRequest/retrievePendingRequestForProvider?service_provider_type=FIREMAN&longitude=57.48913900&latitude=-20.25491100&station_id=-1";
+        $process_assigned  = curl_init($get_url_assigned ); //your API url
+        curl_setopt($process_assigned , CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($process_assigned , CURLOPT_HEADER, false);
+        curl_setopt($process_assigned , CURLOPT_RETURNTRANSFER, true);
+        $return_assigned  = curl_exec($process_assigned );
+        curl_close($process_assigned );
+        $data["response_assigned"] = json_decode ($return_assigned) ;
 
         //get stations
         $this->load->model('Patrol_model');
@@ -78,6 +86,9 @@ class Welcome extends CI_Controller
 
         $this->load->view('pending_requests', $data);
     }
+
+   
+
 
     public function getVideo($id)
     {
@@ -107,8 +118,14 @@ class Welcome extends CI_Controller
         }
         sendInitiationRequestNotif($array_tokens);
 
+        //success messgge
+        $this->session->set_flashdata('success', 'Assignment Done');
+
         //redirect
-        $this->requests();
+        redirect('index.php/welcome/requests');
     }
+
+
+
 
 }

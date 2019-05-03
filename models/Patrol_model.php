@@ -191,7 +191,7 @@ class Patrol_model extends CI_Model
         }
     }
 
-    public function insertPatrolInfo($desc, $device_id, $provider, $token, $mobile_number)
+    public function insertPatrolInfo($desc, $device_id, $provider, $token, $mobile_number, $station_id)
     {
         //insert position into db
         $data = array(
@@ -200,6 +200,7 @@ class Patrol_model extends CI_Model
             'service_provider_id' => $provider,
             'token' => $token,
             'mobile_number' => $mobile_number,
+            'station_id' => $station_id,
         );
 
         $this->db->insert('service_provider_patrol', $data);
@@ -208,14 +209,14 @@ class Patrol_model extends CI_Model
         return $insert_id;
     }
 
-    public function updatePatrolInfo($device_id, $provider, $description, $mobile_number)
+    public function updatePatrolInfo($device_id, $provider, $description, $mobile_number, $station_id)
     {
         //insert position into db
         $data = array(
             'service_provider_id' => $provider,
             'description' => $description,
             'mobile_number' => $mobile_number,
-
+            'station_id' => $station_id,
         );
 
         $this->db->where('device_id', $device_id);
