@@ -285,7 +285,7 @@ class Patrol extends REST_Controller
         $response_array = array(
             'status' => true,
             'error' => "",
-            'station' => null,
+            'station' => array(),
         );
 
         //get parameters
@@ -295,7 +295,9 @@ class Patrol extends REST_Controller
         $this->load->model('Patrol_model');
         try{
             $station_info = $this->Patrol_model->getAvailableStations($provider_type);
-            $response_array["station"] = $station_info;
+            if($station_info != null){
+                $response_array["station"] = $station_info;
+            }
         } catch (Exception $e) {
             $response_array["status"] = false;
             $response_array["error"] = $e->getMessage();
