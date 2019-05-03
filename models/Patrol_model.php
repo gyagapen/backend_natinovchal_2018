@@ -150,6 +150,23 @@ class Patrol_model extends CI_Model
         }
     }
 
+    public function getProviderPatrolsTokenIdsForStation($provider, $station_id)
+    {
+        $this->db->where('service_provider_id', $provider);
+        $this->db->where('station_id', $station_id);
+        $this->db->where('token is NOT NULL', null, false);
+        $this->db->where("token <>''", null, false);
+
+        $query = $this->db->get('service_provider_patrol');
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return null;
+        }
+    }
+
+
     public function getPatrolInfo($device_id)
     {
         $this->db->where('device_id', $device_id);

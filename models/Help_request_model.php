@@ -61,15 +61,21 @@ class Help_request_model extends CI_Model
         //insert help_request_providers
         $providers = explode("|", $provider_list);
         foreach ($providers as $provider) {
+
+            if($provider == "FIREMAN"){
+                $assignment_required = 1;
+            } else {
+                $assignment_required = 0;
+            }
+
             $data_provider = array(
                 'help_request_id' => $insert_id,
                 'needed_provider_id' => $provider,
+                'assignment_required' => $assignment_required,
             );
             $this->db->insert('help_request_provider_need', $data_provider);
 
         }
-
-        
 
 
         return $insert_id;
@@ -114,7 +120,7 @@ class Help_request_model extends CI_Model
         }
     }
 
-    public function getLiveHelpRequestByProviderType($service_provider_type)
+    public function getLiveHelpRequestByProviderType($service_provider_type, $station_id)
     {
 
         $this->db->select('help_request.*');
@@ -122,6 +128,7 @@ class Help_request_model extends CI_Model
         $this->db->select('help_request_provider_need.assigned_station');
         $this->db->from('help_request');
         $this->db->where('help_request_provider_need.needed_provider_id', $service_provider_type);
+        $this->db->where('help_request_provider_need.assigned_station', $station_id);
         $this->db->where('status', 'PENDING');
         $this->db->join('help_request_provider_need', 'help_request_provider_need.help_request_id = help_request.id');
         
@@ -188,7 +195,7 @@ class Help_request_model extends CI_Model
 
         $this->db->where('help_request_id', $help_id);
         $this->db->where('needed_provider_id', $provider_type);
-        $this->db->update('help_request', $data);
+        $this->db->update('help_request_provider_need', $data);
     }
 
     public function retrieveLatestHelpRequestorPosition($help_request_id)

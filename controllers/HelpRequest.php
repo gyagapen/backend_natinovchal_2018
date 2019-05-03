@@ -86,11 +86,12 @@ class HelpRequest extends REST_Controller
             $service_provider_type = $this->get('service_provider_type');
             $service_provider_longitude = $this->get('longitude');
             $service_provider_latitude = $this->get('latitude');
+            $station_id= $this->get('station_id');
 
             //retrieve help details
             $helpRequestList = array();
 
-            $help_details = $this->Help_request_model->getLiveHelpRequestByProviderType($service_provider_type);
+            $help_details = $this->Help_request_model->getLiveHelpRequestByProviderType($service_provider_type, $station_id);
             //$response_array["help_details"] = $help_details;
 
             if ($help_details != null) {
@@ -101,15 +102,16 @@ class HelpRequest extends REST_Controller
                     $needed_providers = $this->Help_request_model->getNeededProviders($help->id);
                     $provider_list = "";
                     foreach ($needed_providers as $provider) {
-                        $provider_list = $provider_list . $provider->needed_provider_id . "|";
-                        //check if any completed assignment
-                        if ($provider->needed_provider_id == $service_provider_type) {
-                            $arrivedAssignment = $this->Patrol_model->getCompletedAssignment($help->id, $service_provider_type);
-                            if ($arrivedAssignment != null) {
-                                $already_completed = true;
-                                break;
+
+                            $provider_list = $provider_list . $provider->needed_provider_id . "|";
+                            //check if any completed assignment
+                            if ($provider->needed_provider_id == $service_provider_type) {
+                                $arrivedAssignment = $this->Patrol_model->getCompletedAssignment($help->id, $service_provider_type);
+                                if ($arrivedAssignment != null) {
+                                    $already_completed = true;
+                                    break;
+                                }
                             }
-                        }
                     }
 
                     $help->video = "";
@@ -233,13 +235,17 @@ class HelpRequest extends REST_Controller
                 $providers = explode("|", $provider_list);
                 $array_tokens = array();
                 foreach ($providers as $provider) {
-                    $array_prov_tokens = $this->Patrol_model->getProviderPatrolsTokenIds($provider);
-                    if ($array_prov_tokens != null) {
-                        foreach ($array_prov_tokens as $patrol_record) {
-                            $array_tokens[] = $patrol_record["token"];
+                    if($provider != "FIREMAN")
+                    {
+                        $array_prov_tokens = $this->Patrol_model->getProviderPatrolsTokenIds($provider);
+                        if ($array_prov_tokens != null) {
+                            foreach ($array_prov_tokens as $patrol_record) {
+                                $array_tokens[] = $patrol_record["token"];
+                            }
                         }
                     }
                 }
+
                 $result_notif = sendInitiationRequestNotif($array_tokens);
                 $response_array["notification_sent"] = $result_notif;
 

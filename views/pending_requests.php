@@ -37,7 +37,7 @@
           ?>
           <tr>
             <td><?php echo $process_name ?></td>
-            <td><?php echo $help->latest_position->computed_distance->destination_address ?></td>
+            <td><?php echo $help->latest_position->computed_distance->origin_address ?></td>
             <td><?php echo $help->latest_position->date_time ?></td>
             <td><?php  echo $help->event_type ?></td>
             <td><a href="#" class="btn btn-info btn-circle" data-toggle="modal" data-target="#more_details<?php echo $help->id ?>">
@@ -97,7 +97,7 @@
                         <b>Address:</b>
                       </div>
                       <div class="col-sm-9">
-                        <?php echo $help->latest_position->computed_distance->destination_address ?>
+                        <?php echo $help->latest_position->computed_distance->origin_address ?>
                       </div>
                     </div>
                     <?php if($help->is_witness){?>
@@ -144,9 +144,9 @@
                         Assign
                       </button>
                       <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <?php foreach ($stations as $station) { ?>
+                          <a class="dropdown-item" href="<?php echo base_url(); ?>index.php/welcome/assignRequest/<?php echo $help->id ?>/<?php echo $station->id ?>"><?php echo $station->station_name; ?></a>
+                        <?php } ?>
                       </div>
                     </div>
                   </div>
