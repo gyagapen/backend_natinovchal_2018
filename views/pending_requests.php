@@ -1,5 +1,5 @@
-<?php $this->load->view('template\header'); ?>
-<?php $this->load->view('template\sidebar'); ?>
+<?php $this->load->view('template/header'); ?>
+<?php $this->load->view('template/sidebar'); ?>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -353,7 +353,7 @@
 </div>
 <!-- End of Content Wrapper -->
 
-<?php $this->load->view('template\footer'); ?>
+<?php $this->load->view('template/footer'); ?>
 
 <script>
   var modalIsOpened = false;

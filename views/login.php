@@ -1,5 +1,5 @@
 
-<?php $this->load->view('template\header'); ?>
+<?php $this->load->view('template/header'); ?>
 <body class="bg-gradient-primary">
 
   <div class="container">
@@ -65,5 +65,5 @@
 
 
 </body>
-<?php $this->load->view('template\footer'); ?>
+<?php $this->load->view('template/footer'); ?>
 </html>
