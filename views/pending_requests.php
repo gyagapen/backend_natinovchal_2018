@@ -1,9 +1,6 @@
 <?php $this->load->view('template\header'); ?>
 <?php $this->load->view('template\sidebar'); ?>
 
-<!-- Auto Refresh -->
-<meta http-equiv="Refresh" content="30"> 
-
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -44,7 +41,7 @@
             <td><?php echo $help->latest_position->computed_distance->origin_address ?></td>
             <td><?php echo $help->latest_position->date_time ?></td>
             <td><?php  echo $help->event_type ?></td>
-            <td><a href="#" class="btn btn-info btn-circle" data-toggle="modal" data-target="#more_details<?php echo $help->id ?>">
+            <td><a href="#" class="btn btn-info btn-circle" onClick="noticeModalOpened()" data-toggle="modal" data-target="#more_details<?php echo $help->id ?>">
                     <i class="fas fa-cog"></i>
                   </a>
             </td>
@@ -142,7 +139,7 @@
                     
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="noticeModalClosed()">Close</button>
                     <div class="dropup">
                       <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Assign
@@ -213,7 +210,7 @@
             <td><?php echo $help_assigned->latest_position->date_time ?></td>
             <td><?php  echo $help_assigned->event_type ?></td>
             <td><?php  echo $assigned_station;?></td>          
-            <td><a href="#" class="btn btn-info btn-circle" data-toggle="modal" data-target="#more_details_assigned<?php echo $help_assigned->id ?>">
+            <td><a href="#" class="btn btn-info btn-circle" onClick="noticeModalOpened()" data-toggle="modal" data-target="#more_details_assigned<?php echo $help_assigned->id ?>">
                     <i class="fas fa-cog"></i>
                   </a>
             </td>
@@ -311,7 +308,7 @@
                     
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="noticeModalClosed()">Close</button>
                     <div class="dropup">
                       <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Assign
@@ -357,5 +354,25 @@
 <!-- End of Content Wrapper -->
 
 <?php $this->load->view('template\footer'); ?>
+
+<script>
+  var modalIsOpened = false;
+
+  function noticeModalOpened(){
+    modalIsOpened = true;
+    console.log("modal opened");
+  }
+
+  function noticeModalClosed(){
+    modalIsOpened = false;
+    console.log("modal closed");
+  }
+
+  setTimeout(function() {
+    if(!modalIsOpened){
+      location.reload();
+    }
+  }, 30000);
+</script>
 
 

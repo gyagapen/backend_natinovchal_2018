@@ -17,7 +17,7 @@
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                    <h1 class="h4 text-gray-900 mb-4">Welcome to MauSafe</h1>
                   </div>
                   <form class="user">
                     <div class="form-group">
@@ -32,7 +32,7 @@
                         <label class="custom-control-label" for="customCheck">Remember Me</label>
                       </div>
                     </div>
-                    <a href="requests" class="btn btn-primary btn-user btn-block">
+                    <a href="<?php echo base_url(); ?>index.php/welcome/requests" class="btn btn-primary btn-user btn-block">
                       Login
                     </a>
                     <hr>
