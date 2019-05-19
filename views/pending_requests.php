@@ -89,8 +89,14 @@
                       <div class="col-sm-3">
                         <b>Special Conditions:</b>
                       </div>
-                      <div class="col-sm-9">
+                      <div class="col-sm-5">
                         <?php echo $help->special_conditions ?>
+                      </div>
+                      <div class="col-sm-2">
+                        <b>Tel:</b>
+                      </div>
+                      <div class="col-sm-2">
+                        52540252
                       </div>
                     </div>
                     <div class="row modal_row">
@@ -258,8 +264,14 @@
                       <div class="col-sm-3">
                         <b>Special Conditions:</b>
                       </div>
-                      <div class="col-sm-9">
+                      <div class="col-sm-5">
                         <?php echo $help_assigned->special_conditions ?>
+                      </div>
+                      <div class="col-sm-2">
+                        <b>Tel:</b>
+                      </div>
+                      <div class="col-sm-2">
+                        52540252
                       </div>
                     </div>
                     <div class="row modal_row">
